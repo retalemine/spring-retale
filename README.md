@@ -97,4 +97,47 @@ Spring Notes:
     </dependency>
 </dependencies>
 ```
+* IOC container
+  * Also know as DI dependency Injection
+  * Mechanism like service locator pattern
+  * In Spring, the objects that form the backbone of your application and that are managed by the Spring IoC container are called beans. A bean is an object that is instantiated, assembled, and otherwise managed by a Spring IoC container. Otherwise, a bean is simply one of many objects in your application. Beans, and the dependencies among them, are reflected in the configuration metadata used by a container.
+  * ClassPathXmlApplicationContext or FileSystemXmlApplicationContext
+```
+ApplicationContext context =
+    new ClassPathXmlApplicationContext(new String[] {"services.xml", "daos.xml"});
 
+// retrieve configured instance
+PetStoreService service = context.getBean("petStore", PetStoreService.class);
+``` 
+  * Application code should have no calls to the getBean() method at all, and thus no dependency on Spring APIs at all.
+  * Metadata configuratiojn
+    * XML based
+    * Anotation based
+    * Java based
+  * XML based
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="services.xml"/>
+    <import resource="resources/messageSource.xml"/>
+    <import resource="/resources/themeSource.xml"/>
+    <import resource="file:C:/config/services.xml"/><!-- Avoid - through "${…}" placeholders that are resolved against JVM system properties at runtime -->
+    
+    <bean id="..." class="...">
+        <!-- collaborators and configuration for this bean go here -->
+    </bean>
+
+    <bean id="..." class="...">
+        <!-- collaborators and configuration for this bean go here -->
+    </bean>
+
+    <!-- more bean definitions go here -->
+
+</beans>
+```
+  * Bean Definitions include - class, name, scope, constructor arguments, properties, autowiring mode, lazy-initialization mode, initialization method, destruction method
+  
