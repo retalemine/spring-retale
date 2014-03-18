@@ -140,4 +140,50 @@ PetStoreService service = context.getBean("petStore", PetStoreService.class);
 </beans>
 ```
   * Bean Definitions include - class, name, scope, constructor arguments, properties, autowiring mode, lazy-initialization mode, initialization method, destruction method
-  
+  * Aliasing a bean outside its definition
+    * A bean in the same container which is named fromName, may also, after the use of this alias definition, be referred to as toName.
+```
+  <alias name="fromName" alias="toName"/>
+```
+  * Use of 'Class' property
+    * Typically, to specify the bean class to be constructed in the case where the container itself directly creates the bean by calling its constructor reflectively, somewhat equivalent to Java code using the new operator.
+    * To specify the actual class containing the static factory method that will be invoked to create the object, in the less common case where the container invokes a static, factory method on a class to create the bean. The object type returned from the invocation of the static factory method may be the same class or another class entirely.
+  * Static nested class are accessed using binary name of inner class in bean definition. e.g. com.example.Foo$Bar
+  * Instantiating static factory method
+```
+<bean id="clientService"
+    class="examples.ClientService"
+    factory-method="createInstance"/>
+````
+  * Instantiating instance factory method
+```
+<bean id="serviceLocator" class="examples.DefaultServiceLocator">
+    <!-- inject any dependencies required by this locator bean -->
+</bean>
+
+<bean id="clientService"
+    factory-bean="serviceLocator"
+    factory-method="createClientServiceInstance"/>
+
+<bean id="accountService"
+    factory-bean="serviceLocator"
+    factory-method="createAccountServiceInstance"/>
+```
+```
+public class DefaultServiceLocator {
+
+    private static ClientService clientService = new ClientServiceImpl();
+    private static AccountService accountService = new AccountServiceImpl();
+
+    private DefaultServiceLocator() {}
+
+    public ClientService createClientServiceInstance() {
+        return clientService;
+    }
+
+    public AccountService createAccountServiceInstance() {
+        return accountService;
+    }
+
+}
+```
