@@ -187,3 +187,46 @@ public class DefaultServiceLocator {
 
 }
 ```
+* IOC
+  * The process is fundamentally the inverse, hence the name Inversion of Control (IoC), i.e the bean itself controlling the instantiation or location of its dependencies on its own by using direct construction of classes, or the Service Locator pattern.
+* DI exists in two major variants, Constructor-based dependency injection and Setter-based dependency injection.
+* Constructor-based DI
+```
+<beans>
+    <bean id="foo" class="x.y.Foo">
+        <constructor-arg ref="bar"/>
+        <constructor-arg ref="baz"/>
+    </bean>
+
+    <bean id="bar" class="x.y.Bar"/>
+
+    <bean id="baz" class="x.y.Baz"/>
+</beans>
+```
+```
+<bean id="exampleBean" class="examples.ExampleBean">
+    <constructor-arg type="int" value="7500000"/>
+    <constructor-arg type="java.lang.String" value="42"/>
+</bean>
+```
+```
+<bean id="exampleBean" class="examples.ExampleBean">
+    <constructor-arg index="0" value="7500000"/>
+    <constructor-arg index="1" value="42"/>
+</bean>
+```
+```
+<bean id="exampleBean" class="examples.ExampleBean">
+    <constructor-arg name="years" value="7500000"/>
+    <constructor-arg name="ultimateanswer" value="42"/>
+</bean>
+```
+* A good rule of thumb is to use constructor arguments for mandatory dependencies and setters for optional dependencies.
+* By default Spring can convert a value supplied in string format to all built-in types, such as int, long, String, boolean, etc. 
+* Beans that are singleton-scoped and set to be pre-instantiated (the default) are created when the container is created.
+* detects configuration problems, such as references to non-existent beans and circular dependencies, at container load-time.
+* Circular dependency
+  * Class A requires an instance of class B through constructor injection, and class B requires an instance of class A through constructor injection. If you configure beans for classes A and B to be injected into each other, the Spring IoC container detects this circular reference at runtime, and throws a BeanCurrentlyInCreationException.
+  * One possible solution is to edit the source code of some classes to be configured by setters rather than constructors. Alternatively, avoid constructor injection and use setter injection only. In other words, although it is not recommended, you can configure circular dependencies with setter injection.
+* Setter-based DI
+*
